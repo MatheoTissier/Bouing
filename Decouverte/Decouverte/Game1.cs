@@ -11,17 +11,17 @@ namespace Decouverte
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private Texture2D _texturePereNoel;
-        private Vector2 _positionPereNoel;
-        private Vector2[] _LespositionsCadeaux = new Vector2[NB_CADEAU];
-        private Texture2D _textureCadeau;
-        private Rectangle[] _positionCadeauRect = new Rectangle[NB_CADEAU];
+        private Texture2D _textureLapin;
+        private Vector2 _positionLapin;
+        private Vector2[] _LespositionCarottes = new Vector2[NB_CADEAU];
+        private Texture2D _textureCarotte;
+        private Rectangle[] _positionCarotteRect = new Rectangle[NB_CADEAU];
         private Texture2D _textureEtoile;
         private Vector2 _positionEtoile;
         private KeyboardState _keyboardState;
-        private int _sensPereNoel;
-        private int _vitessePereNoel;
-        private int _vitesseCadeau;
+        private int _sensLapin;
+        private int _vitesseLapin;
+        private int _vitesseCarotte;
         private int _score;
         private SpriteFont _police;
         private Vector2 _positionScore;
@@ -36,8 +36,8 @@ namespace Decouverte
         private static int _acceleration;
         private bool pause = false;
         public Random aleatoire = new Random();
-        public const int LARGEUR_PERE_NOEL = 200;
-        public const int HAUTEUR_PERE_NOEL = 154;
+        public const int LARGEUR_LAPIN = 200;
+        public const int HAUTEUR_LAPIN = 154;
         public const int TAILLE_FENETRE=800;
         public const int NB_CADEAU=10;
 
@@ -60,34 +60,34 @@ namespace Decouverte
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            _positionPereNoel = new Vector2(TAILLE_FENETRE/2-LARGEUR_PERE_NOEL/2, TAILLE_FENETRE - HAUTEUR_PERE_NOEL);
+            _positionLapin = new Vector2(TAILLE_FENETRE/2-LARGEUR_LAPIN/2, TAILLE_FENETRE - HAUTEUR_LAPIN);
             _positionEtoile = new Vector2(-TAILLE_FENETRE, - TAILLE_FENETRE);
             _rectangleEtoile.X = (int)_positionEtoile.X;
             _rectangleEtoile.Y = (int)_positionEtoile.Y;
             _rectangleEtoile.Width =30;
             _rectangleEtoile.Height = 29;
             _acceleration = 50;
-            _rectanglePereNoel.X = (int)_positionPereNoel.X;
-            _rectanglePereNoel.Y = (int)_positionPereNoel.Y;
-            _rectanglePereNoel.Width = LARGEUR_PERE_NOEL;
-            _rectanglePereNoel.Height = HAUTEUR_PERE_NOEL;
+            _rectanglePereNoel.X = (int)_positionLapin.X;
+            _rectanglePereNoel.Y = (int)_positionLapin.Y;
+            _rectanglePereNoel.Width = LARGEUR_LAPIN;
+            _rectanglePereNoel.Height = HAUTEUR_LAPIN;
             _graphics.PreferredBackBufferWidth = TAILLE_FENETRE;
             _graphics.PreferredBackBufferHeight = TAILLE_FENETRE;
             _graphics.ApplyChanges();
-            _vitessePereNoel = 250;
+            _vitesseLapin = 250;
             _score = 0;
             _chrono = 60;
             _compteur = 0;
             _positionChrono = new Vector2(TAILLE_FENETRE-TAILLE_FENETRE*0.05f, 0);
-            _vitesseCadeau = 200;
+            _vitesseCarotte = 200;
             _positionScore = new Vector2(0, 0);
             for(int i = 0; i < NB_CADEAU; i++)
             {
-                _LespositionsCadeaux[i] = new Vector2(aleatoire.Next(0, GraphicsDevice.Viewport.Width - 50), aleatoire.Next(-GraphicsDevice.Viewport.Width - 50,0));
-                _positionCadeauRect[i].X = (int)_LespositionsCadeaux[i].X;
-                _positionCadeauRect[i].Y = (int)_LespositionsCadeaux[i].Y;
-                _positionCadeauRect[i].Width = 50;
-                _positionCadeauRect[i].Height = 57;
+                _LespositionCarottes[i] = new Vector2(aleatoire.Next(0, GraphicsDevice.Viewport.Width - 50), aleatoire.Next(-GraphicsDevice.Viewport.Width - 50,0));
+                _positionCarotteRect[i].X = (int)_LespositionCarottes[i].X;
+                _positionCarotteRect[i].Y = (int)_LespositionCarottes[i].Y;
+                _positionCarotteRect[i].Width = 50;
+                _positionCarotteRect[i].Height = 57;
             }
             base.Initialize();
         }
@@ -96,8 +96,8 @@ namespace Decouverte
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             // TODO: use this.Content to load your game content here
-            _texturePereNoel = Content.Load<Texture2D>("bunny_droite");
-            _textureCadeau = Content.Load<Texture2D>("cadeau");
+            _textureLapin = Content.Load<Texture2D>("bunny_droite");
+            _textureCarotte = Content.Load<Texture2D>("cadeau");
             _textureEtoile = Content.Load<Texture2D>("etoile");
 
             //MAP
@@ -133,8 +133,8 @@ namespace Decouverte
                     {
                         if (_rectangleEtoile.Contains(_mouseState.X, _mouseState.Y))
                         {
-                            _vitesseCadeau += 50;
-                            _vitessePereNoel += 50;
+                            _vitesseCarotte += 50;
+                            _vitesseLapin += 50;
                             _positionEtoile = new Vector2(-TAILLE_FENETRE, -TAILLE_FENETRE);
                             _rectangleEtoile.X = (int)_positionEtoile.X;
                             _rectangleEtoile.Y = (int)_positionEtoile.Y;
@@ -143,48 +143,48 @@ namespace Decouverte
                     }
 
                     // si fleche droite
-                    if (_keyboardState.IsKeyDown(Keys.Right) && !(_keyboardState.IsKeyDown(Keys.Left)) && _positionPereNoel.X < TAILLE_FENETRE - LARGEUR_PERE_NOEL)
+                    if (_keyboardState.IsKeyDown(Keys.Right) && !(_keyboardState.IsKeyDown(Keys.Left)) && _positionLapin.X < TAILLE_FENETRE - LARGEUR_LAPIN)
                     {
-                        _sensPereNoel = 1;
-                        _positionPereNoel.X += _sensPereNoel * _vitessePereNoel * deltaTime;
-                        _rectanglePereNoel.X = (int)_positionPereNoel.X;
-                        _rectanglePereNoel.Y = (int)_positionPereNoel.Y;
-                        _texturePereNoel = Content.Load<Texture2D>("bunny_droite");
+                        _sensLapin = 1;
+                        _positionLapin.X += _sensLapin * _vitesseLapin * deltaTime;
+                        _rectanglePereNoel.X = (int)_positionLapin.X;
+                        _rectanglePereNoel.Y = (int)_positionLapin.Y;
+                        _textureLapin = Content.Load<Texture2D>("bunny_droite");
                     }
-                    if (_keyboardState.IsKeyDown(Keys.Left) && !(_keyboardState.IsKeyDown(Keys.Right)) && _positionPereNoel.X > 0)
+                    if (_keyboardState.IsKeyDown(Keys.Left) && !(_keyboardState.IsKeyDown(Keys.Right)) && _positionLapin.X > 0)
                     {
-                        _sensPereNoel = -1;
-                        _positionPereNoel.X += _sensPereNoel * _vitessePereNoel * deltaTime;
-                        _rectanglePereNoel.X = (int)_positionPereNoel.X;
-                        _rectanglePereNoel.Y = (int)_positionPereNoel.Y;
-                        _texturePereNoel = Content.Load<Texture2D>("bunny_gauche");
-                    }
-                    for (int i = 0; i < NB_CADEAU; i++)
-                    {
-                        _LespositionsCadeaux[i].Y += _vitesseCadeau * deltaTime;
-                        _positionCadeauRect[i].X = (int)_LespositionsCadeaux[i].X;
-                        _positionCadeauRect[i].Y = (int)_LespositionsCadeaux[i].Y;
+                        _sensLapin = -1;
+                        _positionLapin.X += _sensLapin * _vitesseLapin * deltaTime;
+                        _rectanglePereNoel.X = (int)_positionLapin.X;
+                        _rectanglePereNoel.Y = (int)_positionLapin.Y;
+                        _textureLapin = Content.Load<Texture2D>("bunny_gauche");
                     }
                     for (int i = 0; i < NB_CADEAU; i++)
                     {
-                        if (_LespositionsCadeaux[i].Y > TAILLE_FENETRE)
+                        _LespositionCarottes[i].Y += _vitesseCarotte * deltaTime;
+                        _positionCarotteRect[i].X = (int)_LespositionCarottes[i].X;
+                        _positionCarotteRect[i].Y = (int)_LespositionCarottes[i].Y;
+                    }
+                    for (int i = 0; i < NB_CADEAU; i++)
+                    {
+                        if (_LespositionCarottes[i].Y > TAILLE_FENETRE)
                         {
-                            _LespositionsCadeaux[i] = new Vector2(aleatoire.Next(0, GraphicsDevice.Viewport.Width - 50), 0);
-                            _positionCadeauRect[i].X = (int)_LespositionsCadeaux[i].X;
-                            _positionCadeauRect[i].Y = (int)_LespositionsCadeaux[i].Y;
+                            _LespositionCarottes[i] = new Vector2(aleatoire.Next(0, GraphicsDevice.Viewport.Width - 50), 0);
+                            _positionCarotteRect[i].X = (int)_LespositionCarottes[i].X;
+                            _positionCarotteRect[i].Y = (int)_LespositionCarottes[i].Y;
                             _songCadeauP.Play();
                         }
                     }
                     for (int i = 0; i < NB_CADEAU; i++)
                     {
-                        if (_positionCadeauRect[i].Intersects(_rectanglePereNoel))
+                        if (_positionCarotteRect[i].Intersects(_rectanglePereNoel))
                         {
-                            _LespositionsCadeaux[i] = new Vector2(aleatoire.Next(0, GraphicsDevice.Viewport.Width - 50), 0);
-                            _positionCadeauRect[i].X = (int)_LespositionsCadeaux[i].X;
-                            _positionCadeauRect[i].Y = (int)_LespositionsCadeaux[i].Y;
+                            _LespositionCarottes[i] = new Vector2(aleatoire.Next(0, GraphicsDevice.Viewport.Width - 50), 0);
+                            _positionCarotteRect[i].X = (int)_LespositionCarottes[i].X;
+                            _positionCarotteRect[i].Y = (int)_LespositionCarottes[i].Y;
                             _score += 1;
-                            _vitesseCadeau += 1;
-                            _vitessePereNoel += 1;
+                            _vitesseCarotte += 1;
+                            _vitesseLapin += 1;
                             _songCadeauG.Play();
                         }
                     }
@@ -246,11 +246,11 @@ namespace Decouverte
             // TODO: Add your drawing code here
 
             _spriteBatch.Begin();
-            _spriteBatch.Draw(_texturePereNoel, _positionPereNoel, Color.White);
+            _spriteBatch.Draw(_textureLapin, _positionLapin, Color.White);
             
             for(int i = 0; i < NB_CADEAU; i++)
             {
-                _spriteBatch.Draw(_textureCadeau, _LespositionsCadeaux[i], Color.White);
+                _spriteBatch.Draw(_textureCarotte, _LespositionCarottes[i], Color.White);
             }
             _spriteBatch.DrawString(_police, $"Score : {_score}", _positionScore, Color.White);
             _spriteBatch.DrawString(_police, $"{(float)Math.Round(_chrono,0)}", _positionChrono, Color.White);
