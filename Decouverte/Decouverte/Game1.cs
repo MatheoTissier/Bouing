@@ -95,6 +95,7 @@ namespace Decouverte
             //TAILLE FENETRE
             _graphics.PreferredBackBufferWidth = TAILLE_FENETRE;
             _graphics.PreferredBackBufferHeight = TAILLE_FENETRE;
+            Window.Title = "Bouing";
 
             //LAPIN
             _positionLapin = new Vector2(0, TAILLE_FENETRE - HAUTEUR_LAPIN * 3 / 2);
