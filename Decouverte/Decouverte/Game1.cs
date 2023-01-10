@@ -261,5 +261,11 @@ namespace Decouverte
             _spriteBatch.End();
             base.Draw(gameTime);
         }
+
+        public interface IBackground
+        {
+            void Update(Rectangle screenRectangle);
+            void Draw(SpriteBatch spriteBatch);
+        }
     }
 }
