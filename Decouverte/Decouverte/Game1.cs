@@ -40,10 +40,15 @@ namespace Decouverte
         public const int HAUTEUR_PERE_NOEL = 154;
         public const int TAILLE_FENETRE=800;
         public const int NB_CADEAU=10;
+
+        //SON
         private SoundEffect _songCadeauG;
         private SoundEffect _songCadeauP;
         private SoundEffect _songEtoile;
         private Song _musique;
+
+        //MAP
+        private Texture2D _textureMap;
 
         public Game1()
         {
@@ -94,6 +99,11 @@ namespace Decouverte
             _texturePereNoel = Content.Load<Texture2D>("bunny_droite");
             _textureCadeau = Content.Load<Texture2D>("cadeau");
             _textureEtoile = Content.Load<Texture2D>("etoile");
+
+            //MAP
+            _textureMap = Content.Load<Texture2D>("Underground");
+
+
             _police = Content.Load<SpriteFont>("Font");
             _musique = Content.Load<Song>("musique");
             _songCadeauG = Content.Load<SoundEffect>("cadeauGagné");
@@ -234,8 +244,10 @@ namespace Decouverte
         protected override void Draw(GameTime gameTime)
         {
             // TODO: Add your drawing code here
+
             _spriteBatch.Begin();
             _spriteBatch.Draw(_texturePereNoel, _positionPereNoel, Color.White);
+            
             for(int i = 0; i < NB_CADEAU; i++)
             {
                 _spriteBatch.Draw(_textureCadeau, _LespositionsCadeaux[i], Color.White);
