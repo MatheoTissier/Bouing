@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Decouverte;
 using Microsoft.Xna.Framework.Graphics;
 using static Decouverte.Game1;
 
@@ -28,7 +27,7 @@ namespace Decouverte
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_textureMap, new Rectangle(0, 0, _screenRectangle.Width, _screenRectangle.Height), Color.White);
+            spriteBatch.Draw(_textureMap, new Rectangle(0, 0, TAILLE_FENETRE, TAILLE_FENETRE), Color.White);
         }
 
         

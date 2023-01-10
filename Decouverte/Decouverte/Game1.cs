@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 using System;
 
@@ -10,36 +10,55 @@ namespace Decouverte
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
+
+        public const int TAILLE_FENETRE = 800;
+
+        //RANDOM
+        public Random aleatoire = new Random();
+
+        //LAPIN
+        public const int LARGEUR_LAPIN = 200;
+        public const int HAUTEUR_LAPIN = 154;
         private SpriteBatch _spriteBatch;
         private Texture2D _textureLapin;
         private Vector2 _positionLapin;
-        private Vector2[] _LespositionCarottes = new Vector2[NB_CADEAU];
-        private Texture2D _textureCarotte;
-        private Rectangle[] _positionCarotteRect = new Rectangle[NB_CADEAU];
-        private Texture2D _textureEtoile;
-        private Vector2 _positionEtoile;
-        private KeyboardState _keyboardState;
         private int _sensLapin;
         private int _vitesseLapin;
+
+        //CARROT
+        private Vector2[] _LespositionCarottes = new Vector2[NB_CARROT];
+        private Rectangle[] _positionCarotteRect = new Rectangle[NB_CARROT];
+        private Texture2D _textureCarotte;
         private int _vitesseCarotte;
+        public const int NB_CARROT = 10;
+
+        //ETOILE
+        private Texture2D _textureEtoile;
+        private Vector2 _positionEtoile;
+        private bool etoile = false;
+
+        private KeyboardState _keyboardState;
+        private MouseState _mouseState;
+
+        //SCORE
         private int _score;
         private SpriteFont _police;
         private Vector2 _positionScore;
         private Vector2 _positionChrono;
-        private Rectangle _rectanglePereNoel;
+
+        private Rectangle _rectangleLapin;
         private Rectangle _rectangleEtoile;
-        private MouseState _mouseState;
+
+        //CHRONO
         private float _chrono;
         private float _compteur;
-        private String _rejouer;
-        private bool etoile = false;
-        private static int _acceleration;
+
+        //PAUSE
         private bool pause = false;
-        public Random aleatoire = new Random();
-        public const int LARGEUR_LAPIN = 200;
-        public const int HAUTEUR_LAPIN = 154;
-        public const int TAILLE_FENETRE=800;
-        public const int NB_CADEAU=10;
+        private String _rejouer;
+
+        //ACCELERATION
+        private static int _acceleration;
 
         //SON
         private SoundEffect _songCadeauG;
@@ -60,30 +79,46 @@ namespace Decouverte
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            _positionLapin = new Vector2(TAILLE_FENETRE/2-LARGEUR_LAPIN/2, TAILLE_FENETRE - HAUTEUR_LAPIN);
-            _positionEtoile = new Vector2(-TAILLE_FENETRE, - TAILLE_FENETRE);
-            _rectangleEtoile.X = (int)_positionEtoile.X;
-            _rectangleEtoile.Y = (int)_positionEtoile.Y;
-            _rectangleEtoile.Width =30;
-            _rectangleEtoile.Height = 29;
-            _acceleration = 50;
-            _rectanglePereNoel.X = (int)_positionLapin.X;
-            _rectanglePereNoel.Y = (int)_positionLapin.Y;
-            _rectanglePereNoel.Width = LARGEUR_LAPIN;
-            _rectanglePereNoel.Height = HAUTEUR_LAPIN;
+
+            //TAILLE FENETRE
             _graphics.PreferredBackBufferWidth = TAILLE_FENETRE;
             _graphics.PreferredBackBufferHeight = TAILLE_FENETRE;
-            _graphics.ApplyChanges();
+            
+            //LAPIN
+            _positionLapin = new Vector2(TAILLE_FENETRE / 2 - LARGEUR_LAPIN / 2, TAILLE_FENETRE - HAUTEUR_LAPIN);
+            _rectangleLapin.X = (int)_positionLapin.X;
+            _rectangleLapin.Y = (int)_positionLapin.Y;
+            _rectangleLapin.Width = LARGEUR_LAPIN;
+            _rectangleLapin.Height = HAUTEUR_LAPIN;
+
             _vitesseLapin = 250;
-            _score = 0;
-            _chrono = 60;
-            _compteur = 0;
-            _positionChrono = new Vector2(TAILLE_FENETRE-TAILLE_FENETRE*0.05f, 0);
             _vitesseCarotte = 200;
+
+            //ETOILE
+            _positionEtoile = new Vector2(-TAILLE_FENETRE, -TAILLE_FENETRE);
+            _rectangleEtoile.X = (int)_positionEtoile.X;
+            _rectangleEtoile.Y = (int)_positionEtoile.Y;
+            _rectangleEtoile.Width = 30;
+            _rectangleEtoile.Height = 29;
+
+
+            _acceleration = 50;
+            _graphics.ApplyChanges();
+
+            //SCORE
+            _score = 0;
             _positionScore = new Vector2(0, 0);
-            for(int i = 0; i < NB_CADEAU; i++)
+
+            //CHRONO
+            _chrono = 60;
+            _positionChrono = new Vector2(TAILLE_FENETRE - TAILLE_FENETRE * 0.05f, 0);
+
+            //CHRONO
+            _compteur = 0;
+
+            for (int i = 0; i < NB_CARROT; i++)
             {
-                _LespositionCarottes[i] = new Vector2(aleatoire.Next(0, GraphicsDevice.Viewport.Width - 50), aleatoire.Next(-GraphicsDevice.Viewport.Width - 50,0));
+                _LespositionCarottes[i] = new Vector2(aleatoire.Next(0, GraphicsDevice.Viewport.Width - 50), aleatoire.Next(-GraphicsDevice.Viewport.Width - 50, 0));
                 _positionCarotteRect[i].X = (int)_LespositionCarottes[i].X;
                 _positionCarotteRect[i].Y = (int)_LespositionCarottes[i].Y;
                 _positionCarotteRect[i].Width = 50;
@@ -96,6 +131,8 @@ namespace Decouverte
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             // TODO: use this.Content to load your game content here
+
+            //TEXTURE
             _textureLapin = Content.Load<Texture2D>("bunny_droite");
             _textureCarotte = Content.Load<Texture2D>("cadeau");
             _textureEtoile = Content.Load<Texture2D>("etoile");
@@ -103,8 +140,10 @@ namespace Decouverte
             //MAP
             _textureMap = Content.Load<Texture2D>("Underground");
 
-
+            //FONT
             _police = Content.Load<SpriteFont>("Font");
+
+            //MUSIC
             _musique = Content.Load<Song>("musique");
             _songCadeauG = Content.Load<SoundEffect>("cadeauGagné");
             _songCadeauP = Content.Load<SoundEffect>("cadeauPerdu");
@@ -147,25 +186,25 @@ namespace Decouverte
                     {
                         _sensLapin = 1;
                         _positionLapin.X += _sensLapin * _vitesseLapin * deltaTime;
-                        _rectanglePereNoel.X = (int)_positionLapin.X;
-                        _rectanglePereNoel.Y = (int)_positionLapin.Y;
+                        _rectangleLapin.X = (int)_positionLapin.X;
+                        _rectangleLapin.Y = (int)_positionLapin.Y;
                         _textureLapin = Content.Load<Texture2D>("bunny_droite");
                     }
                     if (_keyboardState.IsKeyDown(Keys.Left) && !(_keyboardState.IsKeyDown(Keys.Right)) && _positionLapin.X > 0)
                     {
                         _sensLapin = -1;
                         _positionLapin.X += _sensLapin * _vitesseLapin * deltaTime;
-                        _rectanglePereNoel.X = (int)_positionLapin.X;
-                        _rectanglePereNoel.Y = (int)_positionLapin.Y;
+                        _rectangleLapin.X = (int)_positionLapin.X;
+                        _rectangleLapin.Y = (int)_positionLapin.Y;
                         _textureLapin = Content.Load<Texture2D>("bunny_gauche");
                     }
-                    for (int i = 0; i < NB_CADEAU; i++)
+                    for (int i = 0; i < NB_CARROT; i++)
                     {
                         _LespositionCarottes[i].Y += _vitesseCarotte * deltaTime;
                         _positionCarotteRect[i].X = (int)_LespositionCarottes[i].X;
                         _positionCarotteRect[i].Y = (int)_LespositionCarottes[i].Y;
                     }
-                    for (int i = 0; i < NB_CADEAU; i++)
+                    for (int i = 0; i < NB_CARROT; i++)
                     {
                         if (_LespositionCarottes[i].Y > TAILLE_FENETRE)
                         {
@@ -175,9 +214,9 @@ namespace Decouverte
                             _songCadeauP.Play();
                         }
                     }
-                    for (int i = 0; i < NB_CADEAU; i++)
+                    for (int i = 0; i < NB_CARROT; i++)
                     {
-                        if (_positionCarotteRect[i].Intersects(_rectanglePereNoel))
+                        if (_positionCarotteRect[i].Intersects(_rectangleLapin))
                         {
                             _LespositionCarottes[i] = new Vector2(aleatoire.Next(0, GraphicsDevice.Viewport.Width - 50), 0);
                             _positionCarotteRect[i].X = (int)_LespositionCarottes[i].X;
@@ -189,12 +228,13 @@ namespace Decouverte
                         }
                     }
 
-                    //chrono
+                    //CHRONO
                     _chrono = _chrono - deltaTime;
 
-                    //compteur
+                    //COMPTEUR
                     _compteur += deltaTime;
-                    //si le compteur depasse 10 sec
+
+                    //SI LE COMPTEUR DEPASSE
                     if (_compteur >= 10)
                     {
                         etoile = true;
@@ -204,7 +244,7 @@ namespace Decouverte
                         _rectangleEtoile.Y = (int)_positionEtoile.Y;
                     }
 
-                    //si l'étoile est apparue depuis plus de 2sec
+                    //L'ÉTOILE EST APPARUE
                     if (_compteur > 2 && etoile == true)
                     {
                         etoile = false;
@@ -213,14 +253,14 @@ namespace Decouverte
                         _rectangleEtoile.Y = (int)_positionEtoile.Y;
                     }
 
-                    //si on appuie sur space = pause
+                    //SI ON APPUIE SUR SPACE => PAUSE
                     if (_keyboardState.IsKeyDown(Keys.Space))
                     {
                         pause = true;
                     }
                 }
-                
-                //si on appuie sur entrer = pas pause
+
+                //SI ON APPUIE SUR ENTER => PAS PAUSE
                 if (_keyboardState.IsKeyDown(Keys.Enter))
                 {
                     pause = false;
@@ -247,13 +287,13 @@ namespace Decouverte
 
             _spriteBatch.Begin();
             _spriteBatch.Draw(_textureLapin, _positionLapin, Color.White);
-            
-            for(int i = 0; i < NB_CADEAU; i++)
+
+            for (int i = 0; i < NB_CARROT; i++)
             {
                 _spriteBatch.Draw(_textureCarotte, _LespositionCarottes[i], Color.White);
             }
             _spriteBatch.DrawString(_police, $"Score : {_score}", _positionScore, Color.White);
-            _spriteBatch.DrawString(_police, $"{(float)Math.Round(_chrono,0)}", _positionChrono, Color.White);
+            _spriteBatch.DrawString(_police, $"{(float)Math.Round(_chrono, 0)}", _positionChrono, Color.White);
             _spriteBatch.DrawString(_police, _rejouer, new Vector2(0, 50), Color.White);
             _spriteBatch.Draw(_textureEtoile, _positionEtoile, Color.White);
             _spriteBatch.End();
