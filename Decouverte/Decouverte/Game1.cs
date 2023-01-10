@@ -10,8 +10,9 @@ namespace Decouverte
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
+        private SpriteBatch _spriteBatch;
 
-        public const int TAILLE_FENETRE = 800;
+        public const int TAILLE_FENETRE = 1000;
 
         //RANDOM
         public Random aleatoire = new Random();
@@ -19,7 +20,6 @@ namespace Decouverte
         //LAPIN
         public const int LARGEUR_LAPIN = 200;
         public const int HAUTEUR_LAPIN = 154;
-        private SpriteBatch _spriteBatch;
         private Texture2D _textureLapin;
         private Vector2 _positionLapin;
         private int _sensLapin;
@@ -33,7 +33,16 @@ namespace Decouverte
         public const int NB_CARROT = 10;
 
         //ESCALIER
-        private Vector2 _positionEscalier;
+        public const int LARGEUR_LADDER = 222;
+        public const int HAUTEUR_LADDER = 492;
+        public const int LARGEUR_LADDERSKY = 566;
+        public const int HAUTEUR_LADDERSKY = 702;
+        private Texture2D _textureLadder;
+        private Texture2D _textureLadderSky;
+        private Vector2 _positionLadderLeft;
+        private Vector2 _positionLadderMilieu;
+        private Vector2 _positionLadderRight;
+        
 
         //ETOILE
         private Texture2D _textureEtoile;
@@ -64,8 +73,8 @@ namespace Decouverte
         private static int _acceleration;
 
         //SON
-        private SoundEffect _songCadeauG;
-        private SoundEffect _songCadeauP;
+        private SoundEffect _rabbitEat;
+        private SoundEffect _rabbitLose;
         private SoundEffect _songEtoile;
         private Song _musique;
 
@@ -86,9 +95,9 @@ namespace Decouverte
             //TAILLE FENETRE
             _graphics.PreferredBackBufferWidth = TAILLE_FENETRE;
             _graphics.PreferredBackBufferHeight = TAILLE_FENETRE;
-            
+
             //LAPIN
-            _positionLapin = new Vector2(TAILLE_FENETRE / 2 - LARGEUR_LAPIN / 2, TAILLE_FENETRE - HAUTEUR_LAPIN);
+            _positionLapin = new Vector2(0, TAILLE_FENETRE - HAUTEUR_LAPIN * 3 / 2);
             _rectangleLapin.X = (int)_positionLapin.X;
             _rectangleLapin.Y = (int)_positionLapin.Y;
             _rectangleLapin.Width = LARGEUR_LAPIN;
@@ -104,6 +113,11 @@ namespace Decouverte
             _rectangleEtoile.Width = 30;
             _rectangleEtoile.Height = 29;
 
+            //ECHELLE
+            _positionLadderLeft = new Vector2(0, TAILLE_FENETRE - HAUTEUR_LADDER * 2);
+            _positionLadderMilieu = new Vector2(0, HAUTEUR_LADDER * 1 / 3);
+            _positionLadderRight = new Vector2(TAILLE_FENETRE - LARGEUR_LADDER, TAILLE_FENETRE / 2);
+            
 
 
             _acceleration = 50;
@@ -138,8 +152,10 @@ namespace Decouverte
 
             //TEXTURE
             _textureLapin = Content.Load<Texture2D>("bunny_droite");
-            _textureCarotte = Content.Load<Texture2D>("cadeau");
+            _textureCarotte = Content.Load<Texture2D>("carrot");
             _textureEtoile = Content.Load<Texture2D>("etoile");
+            _textureLadder = Content.Load<Texture2D>("LadderS");
+            _textureLadderSky = Content.Load<Texture2D>("LadderSky");
 
             //MAP
             _textureMap = Content.Load<Texture2D>("Underground");
@@ -149,8 +165,8 @@ namespace Decouverte
 
             //MUSIC
             _musique = Content.Load<Song>("musique");
-            _songCadeauG = Content.Load<SoundEffect>("cadeauGagné");
-            _songCadeauP = Content.Load<SoundEffect>("cadeauPerdu");
+            _rabbitEat = Content.Load<SoundEffect>("rabbitEat");
+            _rabbitLose = Content.Load<SoundEffect>("rabbitLose");
             _songEtoile = Content.Load<SoundEffect>("sonEtoile");
             MediaPlayer.Play(_musique);
         }
@@ -217,7 +233,7 @@ namespace Decouverte
                             _LespositionCarottes[i] = new Vector2(aleatoire.Next(0, GraphicsDevice.Viewport.Width - 50), 0);
                             _positionCarotteRect[i].X = (int)_LespositionCarottes[i].X;
                             _positionCarotteRect[i].Y = (int)_LespositionCarottes[i].Y;
-                            _songCadeauP.Play();
+                            _rabbitLose.Play();
                         }
                     }
                     for (int i = 0; i < NB_CARROT; i++)
@@ -230,7 +246,7 @@ namespace Decouverte
                             _score += 1;
                             _vitesseCarotte += 1;
                             _vitesseLapin += 1;
-                            _songCadeauG.Play();
+                            _rabbitEat.Play();
                         }
                     }
 
@@ -274,7 +290,7 @@ namespace Decouverte
             }
             else
             {
-                _rejouer = "Appuyez sur la touche p pour rejouer ou q pour quitter";
+                _rejouer = "P pour rejouer ou Q pour quitter";
                 if (_keyboardState.IsKeyDown(Keys.P))
                 {
                     Initialize();
@@ -285,13 +301,16 @@ namespace Decouverte
                 }
             }
 
-            //LAPIN ET ESCALIER
+            //LAPIN ET ÉCHELLE
             Rectangle _rectLapin = new Rectangle((int)_positionLapin.X, (int)_positionLapin.Y, LARGEUR_LAPIN, HAUTEUR_LAPIN);
-            Rectangle _rectEscalier = new Rectangle();
+            Rectangle _rectLadderLeft = new Rectangle((int)_positionLadderLeft.X, (int)_positionLadderLeft.Y, LARGEUR_LADDER, HAUTEUR_LADDER);
+            Rectangle _rectLadderRight = new Rectangle((int)_positionLadderRight.X, (int)_positionLadderRight.Y, LARGEUR_LADDER, HAUTEUR_LADDER);
 
-            if (_rectLapin.Intersects(_rectEscalier))
+
+
+            if (_rectLapin.Intersects(_rectLadderLeft) || _rectLapin.Intersects(_rectLadderRight))
             {
-                _positionLapin.Y += _vitesseLapin;
+                _positionLapin.Y -= 1;
             }
             base.Update(gameTime);
         }
@@ -303,6 +322,9 @@ namespace Decouverte
             _spriteBatch.Begin();
             _spriteBatch.Draw(_textureMap, new Rectangle(0, 0, TAILLE_FENETRE, TAILLE_FENETRE), Color.White);
             _spriteBatch.Draw(_textureLapin, _positionLapin, Color.White);
+            _spriteBatch.Draw(_textureLadder, _positionLadderLeft, Color.White);
+            _spriteBatch.Draw(_textureLadder, _positionLadderRight, Color.White);
+            //_spriteBatch.Draw(_textureLadderSky, _positionLadderLeft, Color.White);
 
             for (int i = 0; i < NB_CARROT; i++)
             {
