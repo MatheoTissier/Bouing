@@ -233,8 +233,6 @@ namespace Decouverte
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.MidnightBlue);
-
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
             _spriteBatch.Draw(_texturePereNoel, _positionPereNoel, Color.White);
