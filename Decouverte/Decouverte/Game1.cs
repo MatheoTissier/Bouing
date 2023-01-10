@@ -32,6 +32,9 @@ namespace Decouverte
         private int _vitesseCarotte;
         public const int NB_CARROT = 10;
 
+        //ESCALIER
+        private Vector2 _positionEscalier;
+
         //ETOILE
         private Texture2D _textureEtoile;
         private Vector2 _positionEtoile;
@@ -100,6 +103,7 @@ namespace Decouverte
             _rectangleEtoile.Y = (int)_positionEtoile.Y;
             _rectangleEtoile.Width = 30;
             _rectangleEtoile.Height = 29;
+
 
 
             _acceleration = 50;
@@ -280,6 +284,15 @@ namespace Decouverte
                     Exit();
                 }
             }
+
+            //LAPIN ET ESCALIER
+            Rectangle _rectLapin = new Rectangle((int)_positionLapin.X, (int)_positionLapin.Y, LARGEUR_LAPIN, HAUTEUR_LAPIN);
+            Rectangle _rectEscalier = new Rectangle();
+
+            if (_rectLapin.Intersects(_rectEscalier))
+            {
+                _positionLapin.Y += _vitesseLapin;
+            }
             base.Update(gameTime);
         }
 
@@ -302,7 +315,6 @@ namespace Decouverte
             _spriteBatch.End();
             base.Draw(gameTime);
         }
-
-       
+              
     }
 }
