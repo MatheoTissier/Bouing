@@ -158,7 +158,9 @@ namespace Decouverte
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             _keyboardState = Keyboard.GetState();
             _mouseState = Mouse.GetState();
+
             // TODO: Add your update logic here
+            
             if (_chrono >= 0)
             {
                 if (!pause)
@@ -167,7 +169,7 @@ namespace Decouverte
                     // deltaTime stocke le temps écoulé entre 2 tours de boucles
                     // permet de rationaliser le deplacement en pixel en fonction du temps écoulé
 
-                    //si on clique avec la souris
+                    //SI ON CLIQUE AVEC LA SOURIS
                     if (_mouseState.LeftButton == ButtonState.Pressed)
                     {
                         if (_rectangleEtoile.Contains(_mouseState.X, _mouseState.Y))
@@ -181,7 +183,7 @@ namespace Decouverte
                         }
                     }
 
-                    // si fleche droite
+                    // SI FLECHE DROITE
                     if (_keyboardState.IsKeyDown(Keys.Right) && !(_keyboardState.IsKeyDown(Keys.Left)) && _positionLapin.X < TAILLE_FENETRE - LARGEUR_LAPIN)
                     {
                         _sensLapin = 1;
@@ -286,6 +288,7 @@ namespace Decouverte
             // TODO: Add your drawing code here
 
             _spriteBatch.Begin();
+            _spriteBatch.Draw(_textureMap, new Rectangle(0, 0, TAILLE_FENETRE, TAILLE_FENETRE), Color.White);
             _spriteBatch.Draw(_textureLapin, _positionLapin, Color.White);
 
             for (int i = 0; i < NB_CARROT; i++)
@@ -300,10 +303,6 @@ namespace Decouverte
             base.Draw(gameTime);
         }
 
-        public interface IBackground
-        {
-            void Update(Rectangle screenRectangle);
-            void Draw(SpriteBatch spriteBatch);
-        }
+       
     }
 }
