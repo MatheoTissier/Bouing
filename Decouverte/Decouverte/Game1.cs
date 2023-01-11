@@ -51,7 +51,7 @@ namespace Decouverte
         private Vector2 _positionLadderLeft;
         private Vector2 _positionLadderMilieu;
         private Vector2 _positionLadderRight;
-        
+
 
         //ETOILE
         private Texture2D _textureEtoile;
@@ -129,7 +129,7 @@ namespace Decouverte
             _positionLadderLeft = new Vector2(TAILLE_FENETRE - LARGEUR_LADDER, -HAUTEUR_LADDER * 1 / 4);
             _positionLadderMilieu = new Vector2(0, HAUTEUR_LADDER * 1 / 3);
             _positionLadderRight = new Vector2(TAILLE_FENETRE - LARGEUR_LADDER, TAILLE_FENETRE / 2);
-            
+
 
 
             _acceleration = 50;
@@ -192,7 +192,7 @@ namespace Decouverte
             _mouseState = Mouse.GetState();
 
             // TODO: Add your update logic here
-            
+
             if (_chrono >= 0)
             {
                 if (!pause)
@@ -315,26 +315,37 @@ namespace Decouverte
 
             //LAPIN ET ÉCHELLE
             Rectangle _rectLapin = new Rectangle((int)_positionLapin.X, (int)_positionLapin.Y, LARGEUR_LAPIN, HAUTEUR_LAPIN);
-            Rectangle _rectLadderLeft = new Rectangle((int)_positionLadderLeft.X, (int)_positionLadderLeft.Y, LARGEUR_LADDER, HAUTEUR_LADDER);
             Rectangle _rectLadderMilieu = new Rectangle((int)_positionLadderMilieu.X, (int)_positionLadderMilieu.Y, LARGEUR_LADDER, HAUTEUR_LADDER);
             Rectangle _rectLadderRight = new Rectangle((int)_positionLadderRight.X, (int)_positionLadderRight.Y, LARGEUR_LADDER, HAUTEUR_LADDER);
 
-            if (_rectLapin.Intersects(_rectLadderLeft) || _rectLapin.Intersects(_rectLadderRight) || _rectLapin.Intersects(_rectLadderMilieu))
+
+            //POUR MONTER SUR ÉCHELLE
+            if ((_rectLapin.Intersects(_rectLadderRight) || _rectLapin.Intersects(_rectLadderMilieu)) && _keyboardState.IsKeyDown(Keys.Up))
             {
-                _positionLapin.Y -= 1;
+                _positionLapin.Y -= 5;
+            }
+            
+            //POUR DESCENDRE DE ÉCHELLE
+            if ((_rectLapin.Intersects(_rectLadderRight) || _rectLapin.Intersects(_rectLadderMilieu)) && _keyboardState.IsKeyDown(Keys.Down))
+            {
+                _positionLapin.Y += 5;
             }
 
             //CARROTTES ALEATOIRE DANS CHAQUE ETAGE
             int _positionCarrotX = aleatoire.Next(0, TAILLE_FENETRE - LARGEUR_CARROT);
             int _positionCarrotY = aleatoire.Next(0, TAILLE_FENETRE - HAUTEUR_CARROT);
-            Rectangle _rectCarrot = new Rectangle((int)_positionCarrotX, (int)_positionCarrotY, LARGEUR_CARROT, HAUTEUR_CARROT );
+            Rectangle _rectCarrot = new Rectangle((int)_positionCarrotX, (int)_positionCarrotY, LARGEUR_CARROT, HAUTEUR_CARROT);
 
-            while (!pause)
-            {
-                _etage1.Add(_rectCarrot);
-                _etage2.Add(_rectCarrot);
-                _etage3.Add(_rectCarrot);
-            }
+            //if (_compteur > 2)
+            //{
+            //    while (pause)
+            //    {
+            //        _etage1.Add(_rectCarrot);
+            //        _etage2.Add(_rectCarrot);
+            //        _etage3.Add(_rectCarrot);
+            //    }
+
+            //}
 
 
 
@@ -349,7 +360,6 @@ namespace Decouverte
             _spriteBatch.Draw(_textureMap, new Rectangle(0, 0, TAILLE_FENETRE, TAILLE_FENETRE), Color.White);
             _spriteBatch.Draw(_textureLadder, _positionLadderRight, Color.White);
             _spriteBatch.Draw(_textureLadder, _positionLadderMilieu, Color.White);
-            _spriteBatch.Draw(_textureLadder, _positionLadderLeft, Color.White);
             _spriteBatch.Draw(_textureLapin, _positionLapin, Color.White);
             //_spriteBatch.Draw(_textureLadderSky, _positionLadderLeft, Color.White);
 
@@ -366,6 +376,6 @@ namespace Decouverte
             _spriteBatch.End();
             base.Draw(gameTime);
         }
-              
+
     }
 }
