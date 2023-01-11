@@ -329,14 +329,11 @@ namespace Decouverte
             int _positionCarrotY = aleatoire.Next(0, TAILLE_FENETRE - HAUTEUR_CARROT);
             Rectangle _rectCarrot = new Rectangle((int)_positionCarrotX, (int)_positionCarrotY, LARGEUR_CARROT, HAUTEUR_CARROT );
 
-            for (int i = 0; i < NB_CARROT; i++)
+            while (!pause)
             {
                 _etage1.Add(_rectCarrot);
-            }
-            foreach (Rectangle item in _etage1)
-            {
-                _textureCarotte = Content.Load<Texture2D>("carrot");
-
+                _etage2.Add(_rectCarrot);
+                _etage3.Add(_rectCarrot);
             }
 
 
