@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System;
+using System.Collections.Generic;
 
 namespace Decouverte
 {
@@ -17,6 +18,12 @@ namespace Decouverte
         //RANDOM
         public Random aleatoire = new Random();
 
+        //CARROTTES ALEATOIRE DANS CHAQUE ETAGE
+        List<Rectangle> _etage1 = new List<Rectangle>(HAUTEUR_LADDER * 1 / 3);
+        List<Rectangle> _etage2 = new List<Rectangle>(HAUTEUR_LADDER * 1 / 3);
+        List<Rectangle> _etage3 = new List<Rectangle>(HAUTEUR_LADDER * 2 / 3);
+
+
         //LAPIN
         public const int LARGEUR_LAPIN = 200;
         public const int HAUTEUR_LAPIN = 154;
@@ -26,6 +33,8 @@ namespace Decouverte
         private int _vitesseLapin;
 
         //CARROT
+        public const int LARGEUR_CARROT = 65;
+        public const int HAUTEUR_CARROT = 150;
         private Vector2[] _LespositionCarottes = new Vector2[NB_CARROT];
         private Rectangle[] _positionCarotteRect = new Rectangle[NB_CARROT];
         private Texture2D _textureCarotte;
@@ -49,6 +58,10 @@ namespace Decouverte
         private Vector2 _positionEtoile;
         private bool etoile = false;
 
+        //COLLISIONS
+        private Rectangle _rectangleEtoile;
+        private Rectangle _rectangleLapin;
+
         private KeyboardState _keyboardState;
         private MouseState _mouseState;
 
@@ -58,8 +71,6 @@ namespace Decouverte
         private Vector2 _positionScore;
         private Vector2 _positionChrono;
 
-        private Rectangle _rectangleLapin;
-        private Rectangle _rectangleEtoile;
 
         //CHRONO
         private float _chrono;
@@ -115,7 +126,7 @@ namespace Decouverte
             _rectangleEtoile.Height = 29;
 
             //ECHELLE
-            _positionLadderLeft = new Vector2(0, TAILLE_FENETRE - HAUTEUR_LADDER * 2);
+            _positionLadderLeft = new Vector2(TAILLE_FENETRE - LARGEUR_LADDER, -HAUTEUR_LADDER * 1 / 4);
             _positionLadderMilieu = new Vector2(0, HAUTEUR_LADDER * 1 / 3);
             _positionLadderRight = new Vector2(TAILLE_FENETRE - LARGEUR_LADDER, TAILLE_FENETRE / 2);
             
@@ -305,14 +316,31 @@ namespace Decouverte
             //LAPIN ET ÉCHELLE
             Rectangle _rectLapin = new Rectangle((int)_positionLapin.X, (int)_positionLapin.Y, LARGEUR_LAPIN, HAUTEUR_LAPIN);
             Rectangle _rectLadderLeft = new Rectangle((int)_positionLadderLeft.X, (int)_positionLadderLeft.Y, LARGEUR_LADDER, HAUTEUR_LADDER);
+            Rectangle _rectLadderMilieu = new Rectangle((int)_positionLadderMilieu.X, (int)_positionLadderMilieu.Y, LARGEUR_LADDER, HAUTEUR_LADDER);
             Rectangle _rectLadderRight = new Rectangle((int)_positionLadderRight.X, (int)_positionLadderRight.Y, LARGEUR_LADDER, HAUTEUR_LADDER);
 
-
-
-            if (_rectLapin.Intersects(_rectLadderLeft) || _rectLapin.Intersects(_rectLadderRight))
+            if (_rectLapin.Intersects(_rectLadderLeft) || _rectLapin.Intersects(_rectLadderRight) || _rectLapin.Intersects(_rectLadderMilieu))
             {
                 _positionLapin.Y -= 1;
             }
+
+            //CARROTTES ALEATOIRE DANS CHAQUE ETAGE
+            int _positionCarrotX = aleatoire.Next(0, TAILLE_FENETRE - LARGEUR_CARROT);
+            int _positionCarrotY = aleatoire.Next(0, TAILLE_FENETRE - HAUTEUR_CARROT);
+            Rectangle _rectCarrot = new Rectangle((int)_positionCarrotX, (int)_positionCarrotY, LARGEUR_CARROT, HAUTEUR_CARROT );
+
+            for (int i = 0; i < NB_CARROT; i++)
+            {
+                _etage1.Add(_rectCarrot);
+            }
+            foreach (Rectangle item in _etage1)
+            {
+                _textureCarotte = Content.Load<Texture2D>("carrot");
+
+            }
+
+
+
             base.Update(gameTime);
         }
 
@@ -322,11 +350,14 @@ namespace Decouverte
 
             _spriteBatch.Begin();
             _spriteBatch.Draw(_textureMap, new Rectangle(0, 0, TAILLE_FENETRE, TAILLE_FENETRE), Color.White);
-            _spriteBatch.Draw(_textureLapin, _positionLapin, Color.White);
-            _spriteBatch.Draw(_textureLadder, _positionLadderLeft, Color.White);
             _spriteBatch.Draw(_textureLadder, _positionLadderRight, Color.White);
+            _spriteBatch.Draw(_textureLadder, _positionLadderMilieu, Color.White);
+            _spriteBatch.Draw(_textureLadder, _positionLadderLeft, Color.White);
+            _spriteBatch.Draw(_textureLapin, _positionLapin, Color.White);
             //_spriteBatch.Draw(_textureLadderSky, _positionLadderLeft, Color.White);
 
+
+            //APPARAITRE PLUSIEURS CARROTTES
             for (int i = 0; i < NB_CARROT; i++)
             {
                 _spriteBatch.Draw(_textureCarotte, _LespositionCarottes[i], Color.White);
